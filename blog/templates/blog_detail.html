@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ blog.title }}{% endblock %}
+
+{% block content %}
+    <article>
+        <h1>{{ blog.title }}</h1>
+        <p>{{ blog.description }}</p>
+        <p>Author: {{ blog.author.username }}</p>
+        <p>Created: {{ blog.created_at|date:"F d, Y" }}</p>
+        <p>Last updated: {{ blog.updated_at|date:"F d, Y" }}</p>
+        {% if blog.picture %}
+            <img src="{{ blog.picture.url }}" alt="{{ blog.title }}" style="max-width: 500px;">
+        {% endif %}
+        {% if user == blog.author %}
+            <div>
+                <a href="{% url 'update_blog' blog.pk %}" class="button">Edit</a>
+                <form method="post" action="{% url 'delete_blog' blog.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="button delete-button" onclick="return confirm('Are you sure you want to delete this blog?');">Delete</button>
+                </form>
+            </div>
+        {% endif %}
+    </article>
+    <a href="{% url 'home' %}" class="button">Back to all blogs</a>
+{% endblock %}
+

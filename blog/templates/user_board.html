@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}My Blogs{% endblock %}
+
+{% block content %}
+    <h1>My Blogs</h1>
+    {% for blog in blogs %}
+        <article>
+            <h2><a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a></h2>
+            <p>{{ blog.description|truncatewords:30 }}</p>
+            <p>Created: {{ blog.created_at|date:"F d, Y" }}</p>
+            {% if blog.picture %}
+                <img src="{{ blog.picture.url }}" alt="{{ blog.title }}" style="max-width: 300px;">
+            {% endif %}
+            <div>
+                <a href="{% url 'update_blog' blog.pk %}" class="button">Edit</a>
+                <form method="post" action="{% url 'delete_blog' blog.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="button delete-button" onclick="return confirm('Are you sure you want to delete this blog?');">Delete</button>
+                </form>
+            </div>
+        </article>
+    {% empty %}
+        <p>You haven't created any blogs yet.</p>
+    {% endfor %}
+    <a href="{% url 'add_blog' %}" class="button">Add New Blog</a>
+{% endblock %}
+
